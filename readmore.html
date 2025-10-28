@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Building My 3D Animated Portfolio</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #0a1a1f;
+            color: #b8c5d0;
+            line-height: 1.6;
+        }
+
+        .blog-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+        }
+
+        .blog-header {
+            text-align: center;
+            margin-bottom: 3rem;
+            animation: fadeInDown 1s ease-out;
+        }
+
+        .blog-header h1 {
+            font-size: 3rem;
+            color: #ffffff;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+
+        .blog-meta {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            color: #4db8a8;
+            font-size: 0.95rem;
+        }
+
+        .image-slider {
+            width: 100%;
+            margin: 2rem 0;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+            animation: fadeIn 1.2s ease-out;
+        }
+
+        .slider-container {
+            position: relative;
+            width: 100%;
+        }
+
+        .slider-wrapper {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 16/9;
+            background: linear-gradient(135deg, #1a3d3d 0%, #0f2626 100%);
+            line-height: 0;
+        }
+
+        .slider-image {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0;
+            transition: opacity 0.6s ease-in-out;
+            display: block;
+        }
+
+        .slider-image.active {
+            opacity: 1;
+        }
+
+        .slider-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(13, 41, 41, 0.7);
+            backdrop-filter: blur(10px);
+            color: #4db8a8;
+            border: 1px solid rgba(77, 184, 168, 0.3);
+            padding: 14px 18px;
+            cursor: pointer;
+            font-size: 20px;
+            border-radius: 50%;
+            transition: all 0.3s;
+            z-index: 10;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .slider-btn:hover {
+            background: rgba(13, 41, 41, 0.9);
+            border-color: #4db8a8;
+            transform: translateY(-50%) scale(1.1);
+        }
+
+        .slider-btn.prev {
+            left: 20px;
+        }
+
+        .slider-btn.next {
+            right: 20px;
+        }
+
+        .slider-dots {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+            z-index: 10;
+        }
+
+        .dot {
+            height: 12px;
+            width: 12px;
+            margin: 0 6px;
+            background-color: rgba(77, 184, 168, 0.3);
+            border-radius: 50%;
+            display: inline-block;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .dot.active,
+        .dot:hover {
+            background-color: #4db8a8;
+            transform: scale(1.2);
+        }
+
+        .blog-content {
+            background: linear-gradient(135deg, rgba(26, 61, 61, 0.4) 0%, rgba(15, 38, 38, 0.4) 100%);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(77, 184, 168, 0.2);
+            border-radius: 16px;
+            padding: 3rem;
+            margin-top: 2rem;
+            animation: fadeInUp 1s ease-out;
+        }
+
+        .intro-text {
+            font-size: 1.25rem;
+            color: #d4dde4;
+            margin-bottom: 2.5rem;
+            line-height: 1.8;
+            font-style: italic;
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+            color: #4db8a8;
+            margin: 2.5rem 0 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            font-weight: 600;
+        }
+
+        .section-title::before {
+            content: '';
+            width: 4px;
+            height: 30px;
+            background: #4db8a8;
+            border-radius: 2px;
+        }
+
+        .content-text {
+            color: #b8c5d0;
+            font-size: 1.1rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.8;
+        }
+
+        .tech-list {
+            list-style: none;
+            margin: 1.5rem 0;
+        }
+
+        .tech-list li {
+            padding: 0.8rem 0;
+            color: #b8c5d0;
+            font-size: 1.1rem;
+            position: relative;
+            padding-left: 2rem;
+        }
+
+        .tech-list li::before {
+            content: '▹';
+            position: absolute;
+            left: 0;
+            color: #4db8a8;
+            font-size: 1.5rem;
+        }
+
+        .tech-list li strong {
+            color: #d4dde4;
+        }
+
+        .highlight-box {
+            background: linear-gradient(135deg, rgba(26, 61, 61, 0.3) 0%, rgba(15, 38, 38, 0.3) 100%);
+            border-left: 4px solid #4db8a8;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 8px;
+        }
+
+        .highlight-box h3 {
+            color: #4db8a8;
+            margin-bottom: 1rem;
+        }
+
+        .highlight-box ul {
+            list-style: none;
+            margin-top: 1rem;
+        }
+
+        .highlight-box li {
+            padding: 0.5rem 0;
+            color: #b8c5d0;
+            position: relative;
+            padding-left: 1.5rem;
+        }
+
+        .highlight-box li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: #4db8a8;
+            font-weight: bold;
+        }
+
+        .quote-section {
+            background: rgba(26, 61, 61, 0.3);
+            border-left: 4px solid #4db8a8;
+            padding: 2rem;
+            margin: 2.5rem 0;
+            border-radius: 8px;
+            font-size: 1.2rem;
+            font-style: italic;
+            color: #d4dde4;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .blog-header h1 {
+                font-size: 2rem;
+            }
+
+            .blog-content {
+                padding: 2rem 1.5rem;
+            }
+
+            .section-title {
+                font-size: 1.5rem;
+            }
+
+            .content-text {
+                font-size: 1rem;
+            }
+
+            .slider-btn {
+                padding: 10px 14px;
+                font-size: 16px;
+                width: 40px;
+                height: 40px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="blog-container">
+        <div class="blog-header">
+            <h1>Building My 3D Animated Portfolio</h1>
+            <div class="blog-meta">
+                <span>📅 December 15, 2024</span>
+                <span>⏱️ 5 min read</span>
+                <span>🏷️ Web Development, 3D Design</span>
+            </div>
+        </div>
+
+        <div class="image-slider">
+            <div class="slider-container">
+                <button class="slider-btn prev" onclick="changeSlide(-1)">❮</button>
+                <div class="slider-wrapper">
+                    <img src="./assets/portfolio.png"
+                     class="slider-image active" alt="3D Design Workspace" />
+                    <img src="./assets/skill.img.png"
+                     class="slider-image" alt="3D Modeling" />
+                    <img src="./assets/featued.png"
+                     class="slider-image" alt="Web Development" />
+                    <img src="./assets/certification.png"
+                     class="slider-image" alt="Coding Setup" />
+                    <img src="./assets/contact.png"
+                     class="slider-image" alt="Developer Workspace" />
+                </div>
+                <button class="slider-btn next" onclick="changeSlide(1)">❯</button>
+                <div class="slider-dots">
+                    <span class="dot active" onclick="currentSlide(1)"></span>
+                    <span class="dot" onclick="currentSlide(2)"></span>
+                    <span class="dot" onclick="currentSlide(3)"></span>
+                    <span class="dot" onclick="currentSlide(4)"></span>
+                    <span class="dot" onclick="currentSlide(5)"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="blog-content">
+            <p class="intro-text">
+                I didn't just want to showcase my work; I wanted to create an experience. That's when I discovered Mont-Fort.com, a site that felt modern, cinematic, and emotionally engaging. I decided to take inspiration from its design philosophy and build my own 3D animated portfolio — my way.
+            </p>
+
+            <h2 class="section-title">💡 Vision Behind the Design</h2>
+            <p class="content-text">
+                I wanted a site that combined clean UI, smooth motion, and 3D interaction — something that reflected my love for creativity and technology. Instead of using plain scroll transitions, I wanted the user to feel every scroll — as if they were moving through a story.
+            </p>
+
+            <h2 class="section-title">🛠️ Tools and Tech Stack</h2>
+            <ul class="tech-list">
+                <li><strong>React.js</strong> for the foundation and component-based structure</li>
+                <li><strong>Tailwind CSS</strong> for styling and responsive design</li>
+                <li><strong>Framer Motion</strong> for buttery-smooth animations and transitions</li>
+                <li><strong>Drei + React Three Fiber (R3F)</strong> to embed and control 3D models</li>
+                <li><strong>Lenis</strong> for smooth scroll physics</li>
+            </ul>
+
+            <h2 class="section-title">🎨 Building the Experience</h2>
+            <p class="content-text">
+                The challenge was keeping the 3D model persistent across all sections without breaking performance. I used R3F and controlled camera angles via scroll, syncing the 3D motion with each section transition. Each section — Hero, About, Skills, Projects, and Contact — became a scene in my story.
+            </p>
+
+            <div class="highlight-box">
+                <h3>⚡ Challenges Faced</h3>
+                <ul>
+                    <li>Balancing animation detail with performance</li>
+                    <li>Camera synchronization between sections</li>
+                    <li>Responsive scaling of 3D elements</li>
+                </ul>
+                <p class="content-text" style="margin-top: 1rem; margin-bottom: 0;">
+                    After weeks of tuning and testing, I finally saw my vision come alive — a portfolio that didn't just show my work but felt like me.
+                </p>
+            </div>
+
+            <h2 class="section-title">💬 Lessons Learned</h2>
+            <div class="quote-section">
+                This project taught me that design is not about adding more — it's about making it feel natural. It also pushed me to explore the edge where art meets code — and that's exactly where I want to build my future.
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentSlideIndex = 1;
+
+        function changeSlide(n) {
+            showSlide(currentSlideIndex += n);
+        }
+
+        function currentSlide(n) {
+            showSlide(currentSlideIndex = n);
+        }
+
+        function showSlide(n) {
+            const slides = document.querySelectorAll('.slider-image');
+            const dots = document.querySelectorAll('.dot');
+            
+            if (n > slides.length) {
+                currentSlideIndex = 1;
+            }
+            if (n < 1) {
+                currentSlideIndex = slides.length;
+            }
+            
+            slides.forEach(slide => slide.classList.remove('active'));
+            dots.forEach(dot => dot.classList.remove('active'));
+            
+            slides[currentSlideIndex - 1].classList.add('active');
+            dots[currentSlideIndex - 1].classList.add('active');
+        }
+
+        // Auto-advance slides every 5 seconds
+        setInterval(() => {
+            changeSlide(1);
+        }, 5000);
+    </script>
+</body>
+</html>
